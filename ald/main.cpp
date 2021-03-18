@@ -9,7 +9,7 @@
 typedef cv::Vec<uchar,3> vec_uchar_3;
 typedef cv::Vec<char,3> vec_char_3;
 
-constexpr int beginning_frame = 1, ending_frame = 1200, step = 1, treshold = 100;
+constexpr int beginning_frame = 1, ending_frame = 1200, step = 5, foregroundTreshold = 100, movingTreshold = 20;
 
 void openImage(cv::Mat &inputImage, int iImage){
   char buffer[100];
@@ -26,6 +26,13 @@ int L1_normalisation(vec_uchar_3 a, vec_uchar_3 b){
   return sum;
 }
 
+uchar tresholding(vec_uchar_3 a, vec_uchar_3 b, int treshold){
+  if (L1_normalisation(a, b) > treshold)
+    return 255;
+  else
+    return 0;
+}
+
 vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b){
   vec_char_3 sigma(0,0,0);
   for(int i=0; i<3; ++i){
@@ -40,35 +47,40 @@ vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b){
 }
 
 int main(){
-  cv::Mat inputImage, bgImage, fgMask;
+  cv::Mat inputImage, bgImage, fgMask, previousImage, movingMask;
   
   openImage(inputImage, beginning_frame);
   bgImage = inputImage.clone();
+  previousImage = inputImage.clone();
+  fgMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
+  movingMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
 
-  for(int iImage=beginning_frame; iImage<=ending_frame; iImage+=step){
-    
+  for(int iImage=beginning_frame; iImage<=ending_frame; iImage+=step){  
     openImage(inputImage, iImage);
-    fgMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
-
     
     for(int jj=0; jj < inputImage.rows; jj++){
       for(int ii=0; ii < inputImage.cols; ii++){
         
-        vec_uchar_3 input_pixel = inputImage.at<vec_uchar_3>(jj,ii);
-        vec_uchar_3 bg_pixel = bgImage.at<vec_uchar_3>(jj,ii);
+        vec_uchar_3 inputPixel = inputImage.at<vec_uchar_3>(jj,ii);
+        vec_uchar_3 bgPixel = bgImage.at<vec_uchar_3>(jj,ii);
+        vec_uchar_3 previousPixel = previousImage.at<vec_uchar_3>(jj,ii);
         
-        int normal = L1_normalisation(input_pixel, bg_pixel);
-
-        if (normal > treshold)
-          fgMask.at<uchar>(jj,ii) = 255;
-        else
-          bgImage.at<vec_uchar_3>(jj,ii) += sigmaDelta_uchar_3(input_pixel, bg_pixel); 
+        movingMask.at<uchar>(jj,ii) = tresholding(inputPixel, previousPixel, movingTreshold);
+        fgMask.at<uchar>(jj,ii) = tresholding(inputPixel, bgPixel, foregroundTreshold);
+        
+        if(fgMask.at<uchar>(jj,ii) + movingMask.at<uchar>(jj,ii) == 0)
+          bgImage.at<vec_uchar_3>(jj,ii) += sigmaDelta_uchar_3(inputPixel, bgPixel);
       }
     }
 
-    cv::imshow("InputImage", inputImage);
-    cv::imshow("BackgroundImage", bgImage);
-    cv::imshow("ForegroundMask", fgMask);
+    cv::medianBlur(movingMask, movingMask, 5);
+    cv::medianBlur(fgMask, fgMask, 5);
+    previousImage = inputImage.clone();
+
+    cv::imshow("Input Image", inputImage);
+    cv::imshow("Background Image", bgImage);
+    cv::imshow("Foreground Mask", fgMask);
+    cv::imshow("Move Mask", movingMask);
     cv::waitKey(2);
   }
   
