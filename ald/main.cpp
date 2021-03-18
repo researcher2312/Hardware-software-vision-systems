@@ -1,15 +1,15 @@
 #include <iostream>
 #include <cmath>
 
-#include"opencv2/opencv.hpp"
-#include"opencv2/core/core.hpp"
-#include"opencv2/highgui/highgui.hpp"
-#include"opencv2/imgproc/imgproc.hpp"
+#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
 typedef cv::Vec<uchar,3> vec_uchar_3;
 typedef cv::Vec<char,3> vec_char_3;
 
-constexpr int beginning_frame = 1, ending_frame = 1200, step = 1, treshold = 60;
+constexpr int beginning_frame = 1, ending_frame = 1200, step = 1, treshold = 100;
 
 void openImage(cv::Mat &inputImage, int iImage){
   char buffer[100];
@@ -21,7 +21,7 @@ void openImage(cv::Mat &inputImage, int iImage){
 int L1_normalisation(vec_uchar_3 a, vec_uchar_3 b){
   int sum = 0;
   for(int i=0; i<3; ++i){
-    sum += abs((int)(a[i] - b[i]));
+    sum += abs((int)a[i] - (int)b[i]);
   }
   return sum;
 }
@@ -29,10 +29,10 @@ int L1_normalisation(vec_uchar_3 a, vec_uchar_3 b){
 vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b){
   vec_char_3 sigma(0,0,0);
   for(int i=0; i<3; ++i){
-    if ((int)(a[i] - b[i]) > 0){
+    if ((int)a[i] - (int)b[i] > 0){
       sigma[i] = 1;
     }
-    else if ((int)(a[i] - b[i]) < 0){
+    else if ((int)a[i] - (int)b[i] < 0){
       sigma[i] = -1;
     }
   }
@@ -71,9 +71,6 @@ int main(){
     cv::imshow("ForegroundMask", fgMask);
     cv::waitKey(2);
   }
-  
-  
-  
   
   return 0;
 }
