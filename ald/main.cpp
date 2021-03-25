@@ -9,7 +9,8 @@
 typedef cv::Vec<uchar,3> vec_uchar_3;
 typedef cv::Vec<char,3> vec_char_3;
 
-constexpr int beginning_frame = 1, ending_frame = 1200, step = 5, foregroundTreshold = 100, movingTreshold = 20;
+constexpr int beginning_frame = 1, ending_frame = 1200, step = 5,
+              foregroundTreshold = 60, movingTreshold = 20;
 
 void openImage(cv::Mat &inputImage, int iImage){
   char buffer[100];
@@ -33,6 +34,10 @@ uchar tresholding(vec_uchar_3 a, vec_uchar_3 b, int treshold){
     return 0;
 }
 
+void drawRect(){
+  
+}
+
 vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b){
   vec_char_3 sigma(0,0,0);
   for(int i=0; i<3; ++i){
@@ -47,7 +52,8 @@ vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b){
 }
 
 int main(){
-  cv::Mat inputImage, bgImage, fgMask, previousImage, movingMask;
+  cv::Mat inputImage, bgImage, fgMask, previousImage, movingMask,
+          labelledMask, labelStats, labelCentroids;
   
   openImage(inputImage, beginning_frame);
   bgImage = inputImage.clone();
@@ -73,9 +79,22 @@ int main(){
       }
     }
 
-    cv::medianBlur(movingMask, movingMask, 5);
-    cv::medianBlur(fgMask, fgMask, 5);
+    cv::medianBlur(movingMask, movingMask, 7);
+    cv::medianBlur(fgMask, fgMask, 7);
+    cv::morphologyEx(fgMask, fgMask,  cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 7)));
     previousImage = inputImage.clone();
+
+    int labelsCount = cv::connectedComponentsWithStats(fgMask,labelledMask,labelStats,labelCentroids,8,CV_16U);
+
+    for (int i = 1; i < labelsCount; ++i){
+      int area = labelStats.at<int>(i,cv::CC_STAT_AREA);
+      cv::Rect bbox;
+      bbox.x = labelStats.at<int>(i,cv::CC_STAT_LEFT);
+      bbox.y = labelStats.at<int>(i,cv::CC_STAT_TOP);
+      bbox.width = labelStats.at<int>(i,cv::CC_STAT_WIDTH);
+      bbox.height = labelStats.at<int>(i,cv::CC_STAT_HEIGHT);
+      cv::rectangle(inputImage, bbox, cv::Scalar(255, 0, 0));
+    }
 
     cv::imshow("Input Image", inputImage);
     cv::imshow("Background Image", bgImage);
