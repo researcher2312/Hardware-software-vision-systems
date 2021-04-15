@@ -25,12 +25,13 @@ bool objectParameters::isMoving(cv::Mat &movingMask){
         }
     }
     float movingCoefficient = (float)movingPixels*4/area;
-    // char buf[100];
-    // sprintf(buf,"%f",movingCoefficient);
-    // cv::putText(imageToDrawOn,buf , cv::Point(bbox.x,bbox.y),
-    //             cv::FONT_HERSHEY_PLAIN, 0.8, green, 1);
     if (movingCoefficient > movingCoefficientTreshold)
         return true;
     else
         return false;
+}
+
+void objectParameters::writeText(char text[], cv::Scalar color){
+    cv::putText(imageToDrawOn, text, cv::Point(bbox.x,bbox.y),
+                cv::FONT_HERSHEY_PLAIN, 0.8, color, 1);
 }

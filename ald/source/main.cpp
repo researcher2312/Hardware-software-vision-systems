@@ -55,18 +55,29 @@ int main(){
       newObjects.emplace_back(inputImage, labelStats.row(i));
     }
 
-    for (auto checkedObject: newObjects){
-      if (checkedObject.area > areaTreshold)
-        if (checkedObject.isMoving(movingMask))
-          checkedObject.drawRect(red);
-        else
-          checkedObject.drawRect(green);
+    for (auto &checkedObject: newObjects){
+      if (checkedObject.area > areaTreshold){
+        if (!checkedObject.isMoving(movingMask)){
+          float biggestIntersection = 0;
+          int biggestIntersectionID = -1;
+          for (auto &trackedObject: trackedStaticObjects){
+            float newIntersection = intersectionOverUnion(checkedObject.bbox, trackedObject.bbox);
+            if (newIntersection > biggestIntersection){
+              biggestIntersection = newIntersection;
+              biggestIntersectionID = checkedObject.id;
+            }
+          }
+          char buf[50];
+          sprintf(buf,"%f, %d", biggestIntersection, biggestIntersectionID);
+          checkedObject.writeText(buf, green);
+        }
+      }
     }
 
-    cv::imshow("Input Image", inputImage);
-    cv::imshow("Background Image", bgImage);
-    cv::imshow("Foreground Mask", fgMask);
     cv::imshow("Move Mask", movingMask);
+    cv::imshow("Foreground Mask", fgMask);
+    cv::imshow("Background Image", bgImage);
+    cv::imshow("Input Image", inputImage);
     cv::waitKey(2);
   }
   

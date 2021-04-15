@@ -11,4 +11,5 @@ struct objectParameters{
   objectParameters(cv::Mat &mainImage, cv::Mat labelStats);
   bool isMoving(cv::Mat &movingMask);
   void drawRect(cv::Scalar color);
+  void writeText(char display[], cv::Scalar color);
 };
