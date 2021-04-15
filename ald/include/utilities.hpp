@@ -12,4 +12,4 @@ void openImage(cv::Mat &inputImage, int iImage);
 int L1_normalisation(vec_uchar_3 a, vec_uchar_3 b);
 uchar tresholding(vec_uchar_3 a, vec_uchar_3 b, int treshold);
 vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b);
-float intersection_over_union(cv::Rect r1, cv::Rect r2);
+float intersectionOverUnion(cv::Rect r1, cv::Rect r2);

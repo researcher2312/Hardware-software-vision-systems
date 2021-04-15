@@ -35,7 +35,7 @@ vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b){
   return sigma;
 }
 
-float intersection_over_union(cv::Rect r1, cv::Rect r2){
+float intersectionOverUnion(cv::Rect r1, cv::Rect r2){
     // Extract the required values
     unsigned int xmin_a=r1.x;
     unsigned int xmax_a=r1.x+r1.width;

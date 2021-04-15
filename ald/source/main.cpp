@@ -21,7 +21,8 @@ int main(){
   fgMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
   movingMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
 
-  std::vector<objectParameters> newObjectParameters;
+  std::vector<objectParameters> trackedStaticObjects;
+  int nextFreeID = 0;
 
   for(int iImage=beginning_frame; iImage<=ending_frame; iImage+=step){  
     openImage(inputImage, iImage);
