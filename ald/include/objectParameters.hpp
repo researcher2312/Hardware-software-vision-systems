@@ -2,8 +2,7 @@
 #include "opencv2/core/core.hpp"
 
 struct objectParameters{
-  int id = 0;// ID
-  bool visible = true;// is the object visible ?
+  bool isVisible = true;// is the object visible ?
   cv::Rect bbox;// bounding box
   int area = 0;// area
   unsigned int staticCounter = 0;     // for how long the object was static ?

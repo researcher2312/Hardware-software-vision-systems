@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
+#include <map>
 #include <vector>
+
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
@@ -21,7 +23,7 @@ int main(){
   fgMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
   movingMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
 
-  std::vector<objectParameters> trackedStaticObjects;
+  std::map<int, objectParameters> trackedStaticObjects;
   int nextFreeID = 0;
 
   for(int iImage=beginning_frame; iImage<=ending_frame; iImage+=step){  
@@ -51,6 +53,10 @@ int main(){
 
     std::vector<objectParameters> newObjects;
 
+    for (auto &[key, trackedObject]: trackedStaticObjects){
+      trackedObject.isVisible = false;
+    }
+
     for (int i = 1; i < labelsCount; ++i){
       newObjects.emplace_back(inputImage, labelStats.row(i));
     }
@@ -60,16 +66,27 @@ int main(){
         if (!checkedObject.isMoving(movingMask)){
           float biggestIntersection = 0;
           int biggestIntersectionID = -1;
-          for (auto &trackedObject: trackedStaticObjects){
+          for (auto &[key, trackedObject]: trackedStaticObjects){
             float newIntersection = intersectionOverUnion(checkedObject.bbox, trackedObject.bbox);
             if (newIntersection > biggestIntersection){
               biggestIntersection = newIntersection;
-              biggestIntersectionID = checkedObject.id;
+              biggestIntersectionID = key;
             }
           }
           char buf[50];
-          sprintf(buf,"%f, %d", biggestIntersection, biggestIntersectionID);
+          sprintf(buf,"%.1f, %d", biggestIntersection, biggestIntersectionID);
           checkedObject.writeText(buf, green);
+          
+          if (biggestIntersectionID == -1 || biggestIntersection < intersectionOverUnionTreshold){
+            checkedObject.staticCounter = step;
+            trackedStaticObjects.insert(std::pair<int, objectParameters>(nextFreeID, checkedObject));
+            ++nextFreeID;
+          }
+          else {
+            trackedStaticObjects.at(biggestIntersectionID).isVisible = true;
+            trackedStaticObjects.at(biggestIntersectionID).staticCounter += step;
+          }
+
         }
       }
     }
