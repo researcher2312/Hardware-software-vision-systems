@@ -1,3 +1,4 @@
+#include "coefficients.hpp"
 #include "objectParameters.hpp"
 #include "utilities.hpp"
 
@@ -28,7 +29,7 @@ bool objectParameters::isMoving(cv::Mat &movingMask){
     // sprintf(buf,"%f",movingCoefficient);
     // cv::putText(imageToDrawOn,buf , cv::Point(bbox.x,bbox.y),
     //             cv::FONT_HERSHEY_PLAIN, 0.8, green, 1);
-    if (movingCoefficient > 0.2)
+    if (movingCoefficient > movingCoefficientTreshold)
         return true;
     else
         return false;

@@ -7,11 +7,9 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
+#include "coefficients.hpp"
 #include "objectParameters.hpp"
 #include "utilities.hpp"
-
-constexpr int beginning_frame = 1, ending_frame = 1200, step = 5,
-              foregroundTreshold = 60, movingTreshold = 20, areaTreshold = 400;
 
 int main(){
   cv::Mat inputImage, bgImage, fgMask, previousImage, movingMask,
