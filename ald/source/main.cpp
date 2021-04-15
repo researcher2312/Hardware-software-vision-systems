@@ -76,7 +76,7 @@ int main(){
           char buf[50];
           sprintf(buf,"%.1f, %d", biggestIntersection, biggestIntersectionID);
           checkedObject.writeText(buf, green);
-          
+
           if (biggestIntersectionID == -1 || biggestIntersection < intersectionOverUnionTreshold){
             checkedObject.staticCounter = step;
             trackedStaticObjects.insert(std::pair<int, objectParameters>(nextFreeID, checkedObject));
@@ -86,8 +86,16 @@ int main(){
             trackedStaticObjects.at(biggestIntersectionID).isVisible = true;
             trackedStaticObjects.at(biggestIntersectionID).staticCounter += step;
           }
-
         }
+      }
+    }
+
+    for (auto &[key, trackedObject]: trackedStaticObjects){
+      if (trackedObject.staticCounter > staticTimeTreshold){
+        char buf[50];
+        sprintf(buf,"Abandoned luggage ID %d", key);
+        trackedObject.writeText(buf, red);
+        trackedObject.drawRect(red);
       }
     }
 
