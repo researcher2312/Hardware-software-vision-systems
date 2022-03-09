@@ -1,5 +1,8 @@
 #include "ImageProcessor.hpp"
 #include "coefficients.hpp"
+#include "utilities.hpp"
+
+#include "opencv2/highgui/highgui.hpp"
 
 void ImageProcessor::openImage(int iImage){
   char buffer[20];
