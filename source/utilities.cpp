@@ -1,11 +1,6 @@
 #include "utilities.hpp"
 
-void openImage(cv::Mat &inputImage, int iImage){
-  char buffer[100];
-  std::string s_sequencePath = "/home/researcher/hs-vision/ald/pets_2006/";
-  sprintf(buffer,"in%06d.jpg",iImage);
-  inputImage = cv::imread(s_sequencePath+buffer);
-}
+
 
 int L1_normalisation(vec_uchar_3 a, vec_uchar_3 b){
   int sum = 0;

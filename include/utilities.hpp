@@ -8,7 +8,6 @@ const auto blue = cv::Scalar(255, 0, 0);
 const auto green = cv::Scalar(0, 255, 0);
 const auto red = cv::Scalar(0, 0, 255);
 
-void openImage(cv::Mat &inputImage, int iImage);
 int L1_normalisation(vec_uchar_3 a, vec_uchar_3 b);
 uchar tresholding(vec_uchar_3 a, vec_uchar_3 b, int treshold);
 vec_char_3 sigmaDelta_uchar_3(vec_uchar_3 a, vec_uchar_3 b);

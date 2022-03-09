@@ -14,8 +14,7 @@
 #include "utilities.hpp"
 
 int main(){
-  cv::Mat inputImage, bgImage, fgMask, previousImage, movingMask,
-          labelledMask, labelStats, labelCentroids;
+  
   
   openImage(inputImage, beginning_frame);
   bgImage = inputImage.clone();
