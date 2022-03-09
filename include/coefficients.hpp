@@ -3,3 +3,5 @@ constexpr int beginning_frame = 1, ending_frame = 1200, step = 5,
               staticTimeTreshold = 100;
 
 constexpr float movingCoefficientTreshold = 0.2, intersectionOverUnionTreshold = 0.5;
+
+constexpr char imageFoldername[] = "/home/lsriw/pets_2006"
