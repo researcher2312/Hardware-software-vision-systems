@@ -11,8 +11,33 @@ void ImageProcessor::openImage(int iImage){
 }
 
 void ImageProcessor:: initImages(int iImage){
-    bgImage = inputImage.clone();
+  openImage(iImage);
+  bgImage = inputImage.clone();
   previousImage = inputImage.clone();
   fgMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
   movingMask = cv::Mat::zeros(inputImage.rows, inputImage.cols, CV_8U);
+}
+
+void ImageProcessor::performSegmentation(){
+  for(int jj=0; jj < inputImage.rows; jj++){
+      for(int ii=0; ii < inputImage.cols; ii++){
+        
+        vec_uchar_3 inputPixel = inputImage.at<vec_uchar_3>(jj,ii);
+        vec_uchar_3 bgPixel = bgImage.at<vec_uchar_3>(jj,ii);
+        vec_uchar_3 previousPixel = previousImage.at<vec_uchar_3>(jj,ii);
+        
+        movingMask.at<uchar>(jj,ii) = tresholding(inputPixel, previousPixel, movingTreshold);
+        fgMask.at<uchar>(jj,ii) = tresholding(inputPixel, bgPixel, foregroundTreshold);
+        
+        if(fgMask.at<uchar>(jj,ii) + movingMask.at<uchar>(jj,ii) == 0)
+          bgImage.at<vec_uchar_3>(jj,ii) += sigmaDelta_uchar_3(inputPixel, bgPixel);
+      }
+    }
+}
+
+void ImageProcessor::displayImages(){
+  cv::imshow("Move Mask", movingMask);
+  cv::imshow("Foreground Mask", fgMask);
+  cv::imshow("Background Image", bgImage);
+  cv::imshow("Input Image", inputImage);
 }
