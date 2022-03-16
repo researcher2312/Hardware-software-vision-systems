@@ -10,8 +10,11 @@ public:
   void displayImages();
   void applyFilters();
   void copyInputToPrevious(){previousImage = inputImage.clone();};
+  void connectLabels();
+  void highlightFoundObjects();
 
 private:
+void makeTrackedObjectsInvisible();
 cv::Mat inputImage, previousImage, bgImage, fgMask, movingMask,
           labelledMask, labelStats, labelCentroids;
 std::map<int, objectParameters> trackedStaticObjects;

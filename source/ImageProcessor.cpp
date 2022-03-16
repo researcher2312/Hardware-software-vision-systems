@@ -43,6 +43,62 @@ void ImageProcessor::applyFilters(){
   cv::morphologyEx(fgMask, fgMask, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 7)));
 }
 
+void ImageProcessor::makeTrackedObjectsInvisible(){
+  for (auto &[key, trackedObject]: trackedStaticObjects){
+    trackedObject.isVisible = false;
+  }
+}
+
+void ImageProcessor::connectLabels(){
+  int labelsCount = cv::connectedComponentsWithStats(fgMask,labelledMask,labelStats,labelCentroids,8,CV_16U);
+
+  std::vector<objectParameters> newObjects;
+
+  for (int i = 1; i < labelsCount; ++i){
+  newObjects.emplace_back(inputImage, labelStats.row(i));
+  }
+
+  for (auto &checkedObject: newObjects){
+    if (checkedObject.area > areaTreshold){
+      if (!checkedObject.isMoving(movingMask)){
+        float biggestIntersection = 0;
+        int biggestIntersectionID = -1;
+        for (auto &[key, trackedObject]: trackedStaticObjects){
+          float newIntersection = intersectionOverUnion(checkedObject.bbox, trackedObject.bbox);
+          if (newIntersection > biggestIntersection){
+            biggestIntersection = newIntersection;
+            biggestIntersectionID = key;
+          }
+        }
+        char buf[50];
+        sprintf(buf,"%.1f, %d", biggestIntersection, biggestIntersectionID);
+        checkedObject.writeText(buf, green);
+
+        if (biggestIntersectionID == -1 || biggestIntersection < intersectionOverUnionTreshold){
+          checkedObject.staticCounter = step;
+          trackedStaticObjects.insert(std::pair<int, objectParameters>(nextFreeID, checkedObject));
+          ++nextFreeID;
+        }
+        else {
+          trackedStaticObjects.at(biggestIntersectionID).isVisible = true;
+          trackedStaticObjects.at(biggestIntersectionID).staticCounter += step;
+        }
+      }
+    }
+  }
+}
+
+void ImageProcessor::highlightFoundObjects(){
+  for (auto &[key, trackedObject]: trackedStaticObjects){
+    if (trackedObject.staticCounter > staticTimeTreshold){
+      char buf[50];
+      sprintf(buf,"Abandoned luggage ID %d", key);
+      trackedObject.writeText(buf, red);
+      trackedObject.drawRect(red);
+    }
+  }
+}
+
 
 void ImageProcessor::displayImages(){
   cv::imshow("Move Mask", movingMask);
