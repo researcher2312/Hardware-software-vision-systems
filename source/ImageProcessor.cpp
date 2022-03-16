@@ -37,6 +37,13 @@ void ImageProcessor::performSegmentation(){
     }
 }
 
+void ImageProcessor::applyFilters(){
+  cv::medianBlur(movingMask, movingMask, 7);
+  cv::medianBlur(fgMask, fgMask, 7);
+  cv::morphologyEx(fgMask, fgMask, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 7)));
+}
+
+
 void ImageProcessor::displayImages(){
   cv::imshow("Move Mask", movingMask);
   cv::imshow("Foreground Mask", fgMask);

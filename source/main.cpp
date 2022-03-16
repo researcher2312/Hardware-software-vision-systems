@@ -28,10 +28,9 @@ int main(){
     
     imageProcessor.performSegmentation();
 
-    // cv::medianBlur(movingMask, movingMask, 7);
-    // cv::medianBlur(fgMask, fgMask, 7);
-    // cv::morphologyEx(fgMask, fgMask, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 7)));
-    // previousImage = inputImage.clone();
+    imageProcessor.applyFilters();
+
+    imageProcessor.copyInputToPrevious();
 
     // int labelsCount = cv::connectedComponentsWithStats(fgMask,labelledMask,labelStats,labelCentroids,8,CV_16U);
 
