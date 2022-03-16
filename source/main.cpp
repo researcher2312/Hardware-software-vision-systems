@@ -16,9 +16,7 @@
 
 int main(){
 
-  ImageProcessor imageProcessor;
-
-  imageProcessor.initImages(beginning_frame);
+  ImageProcessor imageProcessor(beginning_frame);
   
   // std::map<int, objectParameters> trackedStaticObjects;
   // int nextFreeID = 0;
@@ -27,9 +25,7 @@ int main(){
     imageProcessor.openImage(iImage);
     
     imageProcessor.performSegmentation();
-
     imageProcessor.applyFilters();
-
     imageProcessor.copyInputToPrevious();
 
     // int labelsCount = cv::connectedComponentsWithStats(fgMask,labelledMask,labelStats,labelCentroids,8,CV_16U);

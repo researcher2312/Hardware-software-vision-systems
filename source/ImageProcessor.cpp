@@ -12,7 +12,7 @@ void ImageProcessor::openImage(int iImage){
   inputImage = cv::imread(imageFoldername + buffer);
 }
 
-void ImageProcessor:: initImages(int iImage){
+ImageProcessor::ImageProcessor(int iImage){
   openImage(iImage);
   bgImage = inputImage.clone();
   previousImage = inputImage.clone();

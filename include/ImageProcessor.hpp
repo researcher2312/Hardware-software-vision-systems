@@ -1,9 +1,11 @@
+#include "objectParameters.hpp"
+
 #include "opencv2/imgproc/imgproc.hpp"
 
 class ImageProcessor{
 public:
+  ImageProcessor(int iImage);
   void openImage(int iImage);
-  void initImages(int iImage);
   void performSegmentation();
   void displayImages();
   void applyFilters();
