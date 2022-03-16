@@ -3,11 +3,13 @@
 #include "utilities.hpp"
 
 #include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
 
 void ImageProcessor::openImage(int iImage){
   char buffer[20];
   sprintf(buffer,"in%06d.jpg",iImage);
-  inputImage = cv::imread(imageFoldername+buffer);
+  inputImage = cv::imread(imageFoldername + buffer);
 }
 
 void ImageProcessor:: initImages(int iImage){
