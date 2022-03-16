@@ -8,7 +8,7 @@ struct objectParameters{
   bool isVisible = true;// is the object visible ?
   cv::Rect bbox;// bounding box
   int area = 0;// area
-  unsigned int staticCounter = 0;     // for how long the object was static ?
+  unsigned int staticCounter = 0;// for how long the object was static ?
   cv::Mat &imageToDrawOn;
   objectParameters(cv::Mat &mainImage, cv::Mat labelStats);
   bool isMoving(cv::Mat &movingMask);

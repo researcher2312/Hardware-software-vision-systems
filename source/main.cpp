@@ -3,7 +3,6 @@
 #include <map>
 #include <vector>
 
-
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -15,7 +14,6 @@
 #include "ImageProcessor.hpp"
 
 int main(){
-
   ImageProcessor imageProcessor(beginning_frame);
   
   for(int iImage=beginning_frame; iImage<=ending_frame; iImage+=step){  
