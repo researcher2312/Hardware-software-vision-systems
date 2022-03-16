@@ -14,4 +14,6 @@ public:
 private:
 cv::Mat inputImage, previousImage, bgImage, fgMask, movingMask,
           labelledMask, labelStats, labelCentroids;
+std::map<int, objectParameters> trackedStaticObjects;
+int nextFreeID = 0;
 };

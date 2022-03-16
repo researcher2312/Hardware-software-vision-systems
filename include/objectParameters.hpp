@@ -1,3 +1,6 @@
+#ifndef __OBJECT_PARAMETERS_HPP
+#define __OBJECT_PARAMETERS_HPP
+
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
 
@@ -12,3 +15,5 @@ struct objectParameters{
   void drawRect(cv::Scalar color);
   void writeText(char display[], cv::Scalar color);
 };
+
+#endif

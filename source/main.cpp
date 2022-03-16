@@ -18,12 +18,8 @@ int main(){
 
   ImageProcessor imageProcessor(beginning_frame);
   
-  // std::map<int, objectParameters> trackedStaticObjects;
-  // int nextFreeID = 0;
-
   for(int iImage=beginning_frame; iImage<=ending_frame; iImage+=step){  
     imageProcessor.openImage(iImage);
-    
     imageProcessor.performSegmentation();
     imageProcessor.applyFilters();
     imageProcessor.copyInputToPrevious();
